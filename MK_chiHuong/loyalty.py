@@ -88,3 +88,4 @@ csv_filename = f'iiPoint_Data_{start_date_str}_to_{end_date_str}.csv'
 # Xuất dữ liệu ra file CSV
 df_data.to_csv(csv_filename, index=False, encoding='utf-8-sig')
 print(f"Xuất dữ liệu thành công ra file {csv_filename}")
+# aipdtesst
