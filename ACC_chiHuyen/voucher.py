@@ -22,12 +22,13 @@ print("Kết nối thành công đến MySQL")
 
 # Tính toán ngày đầu tiên của tháng trước và ngày hiện tại
 today = datetime.now()
-first_day_of_last_month = today.replace(day=1) - timedelta(days=1)
+first_day_of_current_month = today.replace(day=1)
+first_day_of_last_month = first_day_of_current_month - timedelta(days=1)
 first_day_of_last_month = first_day_of_last_month.replace(day=1)
 
 # Chuyển đổi ngày sang định dạng chuỗi
 start_date_str = first_day_of_last_month.strftime("%Y-%m-%d")
-end_date_str = today.strftime("%Y-%m-%d")
+end_date_str = first_day_of_current_month.strftime("%Y-%m-%d")
 
 # Truy vấn SQL
 query = f"""
@@ -78,7 +79,7 @@ FROM
       P_OrderID
   ) b ON a.trnsaction_no = b.tran_num
 WHERE
-  a.ef_date BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%%Y-%%m-01') AND CURDATE()
+  a.ef_date BETWEEN '{start_date_str}' AND '{end_date_str}'
 GROUP BY
   a.tran_date,
   a.ef_date,
