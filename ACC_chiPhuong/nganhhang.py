@@ -31,6 +31,10 @@ today = datetime.now()
 first_day_of_current_month = today.replace(day=1)
 first_day_of_last_month = first_day_of_current_month - timedelta(days=1)
 first_day_of_last_month = first_day_of_last_month.replace(day=1)
+last_day_of_last_month = first_day_of_current_month - timedelta(days=1)
+
+# Chuyển đổi ngày sang định dạng chuỗi
+last_day_of_last_month_str = last_day_of_last_month.strftime("%Y-%m-%d")
 print("Kết nối thành công đến SQL Server")
 # Chuyển đổi ngày sang định dạng chuỗi
 start_date_str = first_day_of_last_month.strftime("%Y-%m-%d")
@@ -88,7 +92,7 @@ print("Đọc dữ liệu thành công từ SQL Server")
 print(df_data)
 
 # Xuất dữ liệu ra file Excel
-excel_filename = f'Nganh_Hang_VFC_{start_date_str}_to_{end_date_str}.csv'
+excel_filename = f'Nganh_Hang_VFC_{start_date_str}_to_{last_day_of_last_month_str}.csv'
 
 df_data.to_csv(excel_filename, index=False, encoding='utf-8-sig')
 print(f"Dữ liệu đã được xuất ra file Excel: {excel_filename}")
