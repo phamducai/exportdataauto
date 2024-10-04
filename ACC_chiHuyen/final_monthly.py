@@ -48,8 +48,8 @@ print("Đọc dữ liệu thành công từ MySQL cho truy vấn mới")
 print(df_data_additional)
 
 # Định dạng tên file
-csv_filename = f'final_monthly_{start_date_str}_to_{end_date_str}.csv'
+csv_filename = f'final_monthly_{start_date_str}_to_{end_date_str}.xlsx'
 
-# Xuất dữ liệu ra file CSV
-df_data_additional.to_csv(csv_filename, index=False, encoding='utf-8-sig')
+# Xuất dữ liệu ra file excel
+df_data_additional.to_excel(csv_filename, index=False)
 print(f"Dữ liệu đã được xuất ra file CSV: {csv_filename}")

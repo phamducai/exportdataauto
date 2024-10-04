@@ -65,8 +65,8 @@ print("Đọc dữ liệu thành công từ MySQL")
 print(df_data)
 
 # Định dạng tên file CSV
-csv_filename = f'final_weekly_{start_date_str}_to_{end_date_str}.csv'
+csv_filename = f'final_weekly_{start_date_str}_to_{end_date_str}.xslsx'
 
 # Xuất dữ liệu ra file CSV
-df_data.to_csv(csv_filename, index=False, encoding='utf-8-sig')
+df_data.to_csv(csv_filename, index=False)
 print(f"Dữ liệu đã được xuất ra file CSV: {csv_filename}")
