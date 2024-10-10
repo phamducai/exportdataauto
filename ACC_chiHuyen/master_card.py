@@ -25,7 +25,7 @@ params = urllib.parse.quote_plus(
 connection_string = f"mssql+pyodbc:///?odbc_connect={params}"
 
 # Tạo engine kết nối với SQL Server
-engine = create_engine(connection_string, isolation_level="READ COMMITTED")
+engine = create_engine(connection_string)
 print("Kết nối thành công đến SQL Server")
 
 # Xác định ngày đầu tiên của tháng trước và tháng này
@@ -107,6 +107,7 @@ while current_date < end_date:
 
 # Kết hợp tất cả các DataFrame
 df_data = pd.concat(df_list, ignore_index=True)
+df_data['Trans_No'] = "'" + df_data['Trans_No'].astype(str)
 
 print("Đọc dữ liệu thành công từ SQL Server")
 
@@ -123,7 +124,7 @@ with pd.ExcelWriter(excel_filename, engine='openpyxl') as writer:
     # Định dạng cột Trans_No là text
     workbook = writer.book
     worksheet = writer.sheets['Sheet1']
-    column_letter = openpyxl.utils.get_column_letter(df_data.columns.get_loc('Trans_No') + 1)
+    column_letter = openpyxl.utils.get_column_letter(df_data.columns.get_loc('Trans_No'))
     for cell in worksheet[column_letter][1:]:  # Bỏ qua hàng tiêu đề
         cell.number_format = '@'
 
