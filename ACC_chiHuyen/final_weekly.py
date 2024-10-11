@@ -68,5 +68,5 @@ print(df_data)
 csv_filename = f'final_weekly_{start_date_str}_to_{end_date_str}.xlsx'
 
 # Xuất dữ liệu ra file CSV
-df_data.to_csv(csv_filename, index=False)
+df_data.to_excel(csv_filename, index=False)
 print(f"Dữ liệu đã được xuất ra file CSV: {csv_filename}")
