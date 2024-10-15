@@ -56,9 +56,31 @@ CASE
     JSON_VALUE ( Response_Data, '$.ResData.TrDa' ) ELSE NULL 
   END AS 'P_tran_date',
 CASE
+    
     WHEN ISJSON ( Response_Data ) = 1 THEN
-    concat ( JSON_VALUE ( Response_Data, '$.ResData.DeID' ), JSON_VALUE ( Response_Data, '$.ResData.TrID' ) ) ELSE NULL 
-  END AS 'P_Order_ID' ,
+  CASE
+      
+      WHEN JSON_VALUE ( Response_Data, '$.ResData.DeID' ) IS NOT NULL 
+      AND JSON_VALUE ( Response_Data, '$.ResData.TrID' ) IS NOT NULL THEN
+        CONCAT ( JSON_VALUE ( Response_Data, '$.ResData.DeID' ), JSON_VALUE ( Response_Data, '$.ResData.TrID' ) ) ELSE JSON_VALUE ( Response_Data, '$.ResData.CaNum' ) 
+      END ELSE NULL 
+    END AS 'P_Order_ID',
+  CASE
+      WHEN ISJSON ( Response_Data ) = 1 THEN
+    CASE
+        WHEN LEFT ( JSON_VALUE ( Response_Data, '$.ResData.CaNum' ), 1 ) = '3' THEN
+        CONCAT ( RIGHT ( JSON_VALUE ( Response_Data, '$.ResData.CaNum' ), 4 ), '_JCB' ) 
+        WHEN LEFT ( JSON_VALUE ( Response_Data, '$.ResData.CaNum' ), 1 ) = '4' THEN
+        CONCAT ( RIGHT ( JSON_VALUE ( Response_Data, '$.ResData.CaNum' ), 4 ), '_VISA' ) 
+        WHEN LEFT ( JSON_VALUE ( Response_Data, '$.ResData.CaNum' ), 1 ) = '5' THEN
+        CONCAT ( RIGHT ( JSON_VALUE ( Response_Data, '$.ResData.CaNum' ), 4 ), '_MASTE' ) 
+        WHEN LEFT ( JSON_VALUE ( Response_Data, '$.ResData.CaNum' ), 1 ) = '6' THEN
+        CONCAT ( RIGHT ( JSON_VALUE ( Response_Data, '$.ResData.CaNum' ), 4 ), '_UNION' ) 
+        WHEN LEFT ( JSON_VALUE ( Response_Data, '$.ResData.CaNum' ), 1 ) = '9' THEN
+        CONCAT ( RIGHT ( JSON_VALUE ( Response_Data, '$.ResData.CaNum' ), 4 ), '_ATM' )
+        ELSE CONCAT(RIGHT(JSON_VALUE ( Response_Data, '$.ResData.CaNum' ), 4), '_CARD')
+    END ELSE NULL 
+    END AS 'PMT_ID',
 a.Trans_No as Trans_No
 FROM
   STr_Payment a
