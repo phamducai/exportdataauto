@@ -31,12 +31,10 @@ print("Kết nối thành công đến SQL Server")
 # Xác định ngày đầu tiên của tháng trước và tháng này
 today = datetime.now()
 first_day_this_month = today.replace(day=1)
-last_day_previous_month = first_day_this_month - timedelta(days=1)
-first_day_previous_month = last_day_previous_month.replace(day=1)
+first_day_previous_month = (first_day_this_month - timedelta(days=1)).replace(day=1)
 
 start_date = first_day_previous_month
-end_date = today
-
+end_date = first_day_this_month
 # Truy vấn SQL
 query_template = """
 SELECT
@@ -137,8 +135,9 @@ print("Đọc dữ liệu thành công từ SQL Server")
 print(df_data)
 
 # Đặt tên file dựa trên tháng trước
-previous_month = (today.replace(day=1) - timedelta(days=1)).month
-excel_filename = f'Card_T{previous_month}.xlsx'
+queried_month = first_day_previous_month.month
+queried_year = first_day_previous_month.year
+excel_filename = f'Card_T{queried_month:02d}_{queried_year}.xlsx'
 
 with pd.ExcelWriter(excel_filename, engine='openpyxl') as writer:
     df_data.to_excel(writer, index=False, sheet_name='Sheet1')
