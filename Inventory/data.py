@@ -35,26 +35,26 @@ for index, store in stores.iterrows():
     SELECT 
         :store_code AS `Mã Cửa Hàng`,
         :store_name AS `Tên cửa hàng`,
-        products.product_code AS `Mã sản phẩm`, 
+        products.item_code AS `Mã sản phẩm`, 
         " " AS `Tên Sản Phẩm`,
         products.unit_code AS `Đơn vị lưu kho`,
         CASE 
-            WHEN item_report.`end Qty` IS NULL THEN 1
-            WHEN item_report.`end Qty` <= 0 THEN 1
-            ELSE CAST(REPLACE(item_report.`end Qty`, ',', '') AS DECIMAL(10,2))
+            WHEN stock_inventory.STOCK_QTY IS NULL THEN 1
+            WHEN stock_inventory.STOCK_QTY <= 0 THEN 1
+            ELSE CAST(REPLACE(stock_inventory.STOCK_QTY, ',', '') AS DECIMAL(10,2))
         END AS `Số Lượng tồn kho`,
         0 AS `Hàng đi đường`,  
         CASE 
-            WHEN item_report.`End Unit Cost` IS NULL THEN 1
-            WHEN item_report.`End Unit Cost` = 0 THEN 1
-            ELSE CAST(REPLACE(item_report.`End Unit Cost`, ',', '') AS DECIMAL(10,2))
+            WHEN stock_inventory.STOCK_UNIT_COST IS NULL THEN 1
+            WHEN stock_inventory.STOCK_UNIT_COST = 0 THEN 1
+            ELSE CAST(REPLACE(stock_inventory.STOCK_UNIT_COST, ',', '') AS DECIMAL(10,2))
         END AS `Giá Vốn`
     FROM
         products 
     LEFT JOIN 
-        (SELECT * FROM item_report WHERE SUBSTRING_INDEX(`Store`, ':', 1) = :store_code) AS item_report
+        (SELECT * FROM stock_inventory WHERE STORE_ID = :store_code) AS stock_inventory
     ON 
-        products.product_code = item_report.`Item Code`
+        products.item_code = stock_inventory.ITEM_CD
     """)
 
     # Đọc dữ liệu từ MariaDB
@@ -73,4 +73,4 @@ for index, store in stores.iterrows():
     # Nghỉ 0.1 giây trước khi xử lý cửa hàng tiếp theo
     time.sleep(0.1)
 
-print("Hoàn thành xuất dữ liệu cho tất cả các cửa hàng.")
+print("Hoàn thành xuất dữ liệu cho tất cả các cửa hàng")
