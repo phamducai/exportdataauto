@@ -9,7 +9,7 @@ from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta
 
 # MySQL connection details
-mysql_user = 'IT'
+mysql_user = 'AIIT'
 mysql_password = 'Simple123'
 mysql_host = '192.168.10.35'
 mysql_db = 'vfm_db'

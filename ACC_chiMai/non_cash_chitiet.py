@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import urllib.parse
 
 # Thông tin kết nối đến cơ sở dữ liệu MySQL
-user = 'IT'
+user = 'AIIT'
 password = 'Simple123'
 host = '192.168.10.35'
 database = 'vfm_db'

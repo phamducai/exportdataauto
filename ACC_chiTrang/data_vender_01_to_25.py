@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import urllib.parse
 
 # Thông tin kết nối MySQL
-mysql_user = 'IT'
+mysql_user = 'AIIT'
 mysql_password = 'Simple123'
 mysql_host = '192.168.10.35'
 mysql_db = 'vfm_db'
@@ -25,7 +25,7 @@ today = datetime.now()
 first_day_of_current_month = today.replace(day=1)
 
 # Đặt ngày 25 của tháng hiện tại
-twenty_fifth_of_current_month = first_day_of_current_month.replace(day=25)
+twenty_fifth_of_current_month = first_day_of_current_month.replace(day=31)
 
 # Định dạng ngày cho câu truy vấn
 start_date_str = first_day_of_current_month.strftime("%Y-%m-%d")
