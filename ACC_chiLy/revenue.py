@@ -26,15 +26,14 @@ connection_string = f"mssql+pyodbc:///?odbc_connect={params}"
 engine = create_engine(connection_string)
 print("Kết nối thành công đến SQL Server")
 
-# Tính toán ngày đầu tiên của tháng trước và ngày hiện tại
+# Tính toán ngày mồng 1 tháng trước và ngày mồng 1 tháng này
 today = datetime.now()
-first_day_of_current_month = today.replace(day=1)
-first_day_of_last_month = first_day_of_current_month - timedelta(days=1)
-first_day_of_last_month = first_day_of_last_month.replace(day=1)
+first_day_of_current_month = today.replace(day=1)  # Ngày mồng 1 tháng này
+first_day_of_last_month = (first_day_of_current_month - timedelta(days=1)).replace(day=1)  # Ngày mồng 1 tháng trước
 
 # Chuyển đổi ngày sang định dạng chuỗi
 start_date_str = first_day_of_last_month.strftime("%Y-%m-%d")
-end_date_str = today.strftime("%Y-%m-%d")
+end_date_str = first_day_of_current_month.strftime("%Y-%m-%d")
 
 # Truy vấn SQL
 query = f"""
