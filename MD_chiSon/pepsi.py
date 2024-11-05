@@ -1,4 +1,4 @@
-import pandas as pd
+﻿import pandas as pd
 from sqlalchemy import create_engine
 from datetime import datetime, timedelta
 import urllib
@@ -39,28 +39,76 @@ end_date_str = last_day_of_last_month.strftime("%Y-%m-%d")
 # Truy vấn SQL
 query = f"""
 SELECT
-  STr_SaleDtl.Trans_Date AS Sale_Date,
-  Goods.Goods_Code,
-  STr_SaleDtl.Trans_No,
+  STr_SaleDtl.Trans_Date AS DATE,
   STr_SaleDtl.Stk_ID - 1 AS Store,
-  STr_SaleDtl.Goods_ID AS Itemcode,
-  Goods.Short_Name AS ItemName,
-  SUM(STr_SaleDtl.SKUBase_Qty) AS Qty,
-  SUM(STr_SaleDtl.VAT_Amt + STr_SaleDtl.Sales_Amt) AS Amount
+  Goods.Goods_ID AS Goods_ID,
+  Goods.Short_Name AS Short_Name,
+  Goods.Goods_Code AS Barcode,
+  SUM ( STr_SaleDtl.SKUBase_Qty ) AS Qty,
+  SUM ( STr_SaleDtl.Sales_Amt ) AS Sales,
+  SUM ( STr_SaleDtl.VAT_Amt ) AS VAT,
+  SUM ( STr_SaleDtl.VAT_Amt + STr_SaleDtl.Sales_Amt ) AS After_promotion,
+  SUM ( STr_SaleDtl.Direct_Disc_Amt ) AS Discount,
+  SUM ( STr_SaleDtl.VAT_Amt + STr_SaleDtl.Sales_Amt+ STr_SaleDtl.Direct_Disc_Amt ) AS After_promotion 
 FROM
   STr_SaleDtl
   JOIN Goods ON STr_SaleDtl.Goods_ID = Goods.Goods_ID 
 WHERE
-  Goods.Goods_Grp_ID IN (5001, 5002, 5003, 5005, 5006, 5007, 5101, 5104, 5102, 5105, 5201, 5202, 5302) 
-  AND STr_SaleDtl.Trans_Date >= '{start_date_str}' 
-  AND STr_SaleDtl.Trans_Date <= '{end_date_str}'
+  Goods.Goods_ID IN (
+    221048,
+    221216,
+    221346,
+    221349,
+    221354,
+    221355,
+    221356,
+    221360,
+    221361,
+    221364,
+    162141,
+    162602,
+    162603,
+    162604,
+    223176,
+    221760,
+    221761,
+    222162,
+    222166,
+    165109,
+    223006,
+    223027,
+    223028,
+    223029,
+    223031,
+    223032,
+    223033,
+    166615,
+    223157,
+    223177,
+    223178,
+    223179,
+    223171,
+    223302,
+    223320,
+    223336,
+    166601,
+    224009,
+    224018,
+    166110,
+    167200,
+    224189,
+    224190,
+    233068,
+    233069 
+  ) 
+  AND STr_SaleDtl.Trans_Date >= '2024-10-01' 
+  AND STr_SaleDtl.Trans_Date <= '2024-10-02' 
 GROUP BY
   STr_SaleDtl.Trans_Date,
-  Goods.Goods_Code,
-  STr_SaleDtl.Trans_No,
-  STr_SaleDtl.Stk_ID,
-  STr_SaleDtl.Goods_ID,
-  Goods.Short_Name
+  STr_SaleDtl.Stk_ID ,
+  Goods.Goods_ID ,
+  Goods.Short_Name ,
+  Goods.Goods_Code
 """
 
 # Đọc dữ liệu từ SQL Server
@@ -72,7 +120,7 @@ print("Đọc dữ liệu thành công từ SQL Server")
 print(df_data)
 
 # Định dạng tên file
-excel_filename = f'final_monthly_{start_date_str}_to_{end_date_str}.xlsx'
+excel_filename = f'pepsi_{start_date_str}_to_{end_date_str}.xlsx'
 
 # Xuất dữ liệu ra file Excel
 df_data.to_excel(excel_filename, index=False, engine='openpyxl')
