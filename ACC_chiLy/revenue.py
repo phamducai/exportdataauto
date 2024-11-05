@@ -57,7 +57,7 @@ WITH STr_SaleDtl_CTE AS (
         SUM(CASE WHEN ssd.StkTrCls_ID = 3032 THEN (Sales_Amt) 
                  WHEN ssd.StkTrCls_ID = 3036 THEN -1 * (Sales_Amt) ELSE 0 END) AS Sales_Amt
     FROM STr_SaleDtl ssd 
-    WHERE ssd.Trans_Date >= '{start_date_str}' AND ssd.Trans_Date < '{end_date_str}' AND ssd.Disabled = 0
+    WHERE ssd.Trans_Date >= '{start_date_str}' AND ssd.Trans_Date <= '{end_date_str}' AND ssd.Disabled = 0
     GROUP BY Stk_ID, DATENAME(MONTH, (ssd.Trans_Date))
 ),
 Payment_CTE AS (
@@ -67,7 +67,7 @@ Payment_CTE AS (
            Stk_ID
     FROM STr_Payment spm 
     INNER JOIN STr_SaleDtl ssd ON spm.Trans_No = ssd.Trans_No
-    WHERE spm.Trans_Date >= '{start_date_str}' AND ssd.Trans_Date < '{end_date_str}' 
+    WHERE spm.Trans_Date >= '{start_date_str}' AND ssd.Trans_Date <= '{end_date_str}' 
           AND spm.Disabled = 0 AND Pmt_ID IN (4)
 ),
 Payment1_CTE(Stk_ID, ttPayment_Amt) AS (
