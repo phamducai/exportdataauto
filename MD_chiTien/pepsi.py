@@ -32,9 +32,10 @@ first_day_of_current_month = today.replace(day=1)
 last_day_of_last_month = first_day_of_current_month - timedelta(days=1)
 first_day_of_last_month = last_day_of_last_month.replace(day=1)
 
-# Chuyển đổi ngày sang định dạng chuỗi
+# Convert dates to string format
 start_date_str = first_day_of_last_month.strftime("%Y-%m-%d")
 end_date_str = last_day_of_last_month.strftime("%Y-%m-%d")
+
 
 # Truy vấn SQL
 query = f"""
@@ -49,7 +50,7 @@ SELECT
   SUM ( STr_SaleDtl.VAT_Amt ) AS VAT,
   SUM ( STr_SaleDtl.VAT_Amt + STr_SaleDtl.Sales_Amt ) AS After_promotion,
   SUM ( STr_SaleDtl.Direct_Disc_Amt ) AS Discount,
-  SUM ( STr_SaleDtl.VAT_Amt + STr_SaleDtl.Sales_Amt+ STr_SaleDtl.Direct_Disc_Amt ) AS After_promotion 
+  SUM ( STr_SaleDtl.VAT_Amt + STr_SaleDtl.Sales_Amt+ STr_SaleDtl.Direct_Disc_Amt ) AS Before_promotion 
 FROM
   STr_SaleDtl
   JOIN Goods ON STr_SaleDtl.Goods_ID = Goods.Goods_ID 
@@ -101,8 +102,8 @@ WHERE
     233068,
     233069 
   ) 
-  AND STr_SaleDtl.Trans_Date >= '2024-10-01' 
-  AND STr_SaleDtl.Trans_Date <= '2024-10-02' 
+  AND STr_SaleDtl.Trans_Date >= '{start_date_str}' 
+  AND STr_SaleDtl.Trans_Date <=  '{end_date_str}' 
 GROUP BY
   STr_SaleDtl.Trans_Date,
   STr_SaleDtl.Stk_ID ,
