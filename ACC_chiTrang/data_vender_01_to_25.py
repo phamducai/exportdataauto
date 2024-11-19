@@ -25,7 +25,7 @@ today = datetime.now()
 first_day_of_current_month = today.replace(day=1)
 
 # Đặt ngày 25 của tháng hiện tại
-twenty_fifth_of_current_month = first_day_of_current_month.replace(day=31)
+twenty_fifth_of_current_month = first_day_of_current_month.replace(day=25)
 
 # Định dạng ngày cho câu truy vấn
 start_date_str = first_day_of_current_month.strftime("%Y-%m-%d")
