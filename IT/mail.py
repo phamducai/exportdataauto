@@ -74,7 +74,7 @@ def fetch_sales_data():
 
     return daily_df, avg_df
 
-def send_email(daily_df, avg_df, recipients=['sales_data@famima.vn','n-kikunaga@famima.vn','t-tsuji204@family.co.jp','y-hirao@family.co.jp','a-kirimura@family.co.jp','s-odake855@family.co.jp','t-suzuki984@family.co.jp','b-gen@family.co.jp','ai.pd@famima.vn','truong.tk@famima.vn','hien.dtn@famima.vn']):
+def send_email(daily_df, avg_df, recipients=['sales_data@famima.vn','n-kikunaga@famima.vn','t-tsuji204@family.co.jp','y-hirao@family.co.jp','a-kirimura@family.co.jp','s-odake855@family.co.jp','t-suzuki984@family.co.jp','b-gen@family.co.jp','ai.pd@famima.vn','truong.tk@famima.vn','hien.dtn@famima.vn','a-okada759@family.co.jp']):
     try:
         smtp_server = 'mail.famima.vn'
         smtp_port = 465
