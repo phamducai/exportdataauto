@@ -28,9 +28,9 @@ print("Kết nối thành công đến SQL Server")
 
 # Tính toán ngày bắt đầu và ngày kết thúc theo yêu cầu
 today = datetime.now()
-end_date = today - timedelta(days=4)  # Ngày hôm nay trừ đi 4 ngày
-start_date = today - timedelta(days=32)  # Ngày hôm nay trừ đi 32 ngày
-end_date_label = today - timedelta(days=5)
+end_date = today - timedelta(days=1)  # Ngày hôm nay trừ đi 4 ngày
+start_date = today - timedelta(days=28)  # Ngày hôm nay trừ đi 32 ngày
+end_date_label = today - timedelta(days=1)
 
 # Chuyển đổi ngày sang định dạng chuỗi
 start_date_str = start_date.strftime("%Y-%m-%d")
@@ -50,7 +50,7 @@ FROM
   STr_SaleDtl 
 WHERE
   Trans_Date >= '{start_date_str}' 
-  AND Trans_Date < '{end_date_str}' 
+  AND Trans_Date <= '{end_date_str}' 
   AND Goods_ID IN (
     209304,
     209305,
