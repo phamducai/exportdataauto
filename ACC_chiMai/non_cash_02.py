@@ -2,6 +2,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 from datetime import datetime, timedelta
 import urllib.parse
+from dateutil.relativedelta import relativedelta
 
 # Thông tin kết nối đến cơ sở dữ liệu MySQL
 user = 'AIIT'
@@ -19,7 +20,7 @@ engine = create_engine(connection_str, echo=True)
 print("Đã kết nối thành công với MySQL")
 
 # Tính toán ngày mùng 1 của tháng này và ngày 16 của tháng này
-today = datetime.now()
+today = datetime.now() - relativedelta(months=1)
 first_day_of_current_month = today.replace(day=1)
 sixteenth_day_of_current_month = today.replace(day=16)
 

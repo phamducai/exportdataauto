@@ -27,7 +27,7 @@ engine = create_engine(connection_string)
 print("Successfully connected to SQL Server")
 
 # Calculate yesterday's date
-yesterday = (datetime.now() - timedelta(days=0)).strftime("%Y-%m-%d")
+yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 
 # SQL query using yesterday's date
 query = f"""

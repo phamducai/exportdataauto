@@ -40,7 +40,7 @@ params = urllib.parse.quote_plus(
 )
 sqlserver_connection_string = f"mssql+pyodbc:///?odbc_connect={params}"
 sqlserver_engine = create_engine(sqlserver_connection_string, echo=True)
-days_to_subtract = 0
+days_to_subtract = 1
 current_date =(datetime.now() - timedelta(days=days_to_subtract)).strftime("%Y-%m-%d") # Format: YYYY-MM-DD for SQL queries
 current_date_formatted = (datetime.now() - timedelta(days=days_to_subtract)).strftime("%Y/%m/%d")  # Format: YYYY/MM/DD for the stored procedure
 current_invoice_date = (datetime.now() - timedelta(days=days_to_subtract)).strftime("%Y%m%d")  # Format: YYYYMMDD for the stored procedure
