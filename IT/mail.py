@@ -14,7 +14,7 @@ def fetch_sales_data():
     sqlserver_db = 'DSMART90'
 
     # Get current date and first day of month
-    current_date = datetime.now() - timedelta(days=1)
+    current_date = datetime.now() - timedelta(days=0)
     first_day = current_date.replace(day=1).strftime("%Y-%m-%d")
     current_date_str = current_date.strftime("%Y-%m-%d")
     
@@ -81,7 +81,7 @@ def send_email(daily_df, avg_df, recipients=['sales_data@famima.vn','n-kikunaga@
         smtp_user = 'no-reply@famima.vn'
         smtp_pass = 'JQKA@2222'
         
-        current_date = (datetime.now()-timedelta(days=1)).strftime("%Y-%m-%d")
+        current_date = (datetime.now()-timedelta(days=0)).strftime("%Y-%m-%d")
         # Calculate totals for daily
         daily_total_sales = float(daily_df['Sale'].sum())
         daily_total_customers = int(daily_df['TransCount'].sum())
