@@ -49,7 +49,7 @@ def get_sql_data(engine):
     query = """
     SELECT STK_Code 
     FROM Stock 
-    WHERE Disabled = 0 AND STK_Code != '00000'
+    WHERE Disabled = 0 AND STK_Code NOT IN (00000,00290,00291,00292,00293,00203,00202)
     """
     try:
         df = pd.read_sql(query, engine)
@@ -62,7 +62,7 @@ def get_sql_data(engine):
 def get_api_data():
     api_body = {
         "skipCount": 0,
-        "maxResultCount": 164,
+        "maxResultCount": 200,
         "fromDate": from_date,
         "toDate": to_date
     }
@@ -116,7 +116,7 @@ def main():
 
     # Tạo thông báo
     if missed_stores:
-        batches = split_into_batches(missed_stores, batch_size=20)
+        batches = split_into_batches(missed_stores, batch_size=50)
         messages = []
         for batch in batches:
             message = (
