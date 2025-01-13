@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import urllib
 
 # Lấy ngày hiện tại
-current_date = (datetime.now() - timedelta(days=0)).strftime("%Y-%m-%d")
+current_date = (datetime.now() - timedelta(days=3)).strftime("%Y-%m-%d")
 from_date = f"{current_date}T00:00:00.000"
 to_date = f"{current_date}T23:59:59.999"
 

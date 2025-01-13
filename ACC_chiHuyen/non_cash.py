@@ -2,6 +2,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 from datetime import datetime
 import urllib.parse
+from dateutil.relativedelta import relativedelta
 
 # Thông tin kết nối MySQL
 mysql_user = 'AIIT'
@@ -22,8 +23,12 @@ print("Kết nối thành công đến MySQL")
 
 # Lấy ngày mồng 1 của tháng trước và ngày mồng 2 của tháng này
 today = datetime.now()
-first_day_of_last_month = datetime(today.year, today.month - 1, 1)
-second_day_of_this_month = datetime(today.year, today.month, 2)
+
+# Tính ngày mồng 1 của tháng trước
+first_day_of_last_month = (today - relativedelta(months=1)).replace(day=1)
+
+# Tính ngày mồng 2 của tháng này
+second_day_of_this_month = today.replace(day=2)
 
 # Định dạng tên file
 start_date_str = first_day_of_last_month.strftime("%Y-%m-%d")
@@ -63,6 +68,7 @@ SELECT
         WHEN a.PMT_code = 'VOUCH' THEN '131017'
         WHEN a.PMT_code = 'BTF' THEN '131017'
         WHEN a.PMT_code = 'POINT' THEN '131019'
+        WHEN a.PMT_code = 'MSB' THEN '131038'
         ELSE '131013'
     END AS ACCOUNT,
     a.P_tran_date,
