@@ -47,7 +47,7 @@ query = f"""
 SELECT
     b.Stk_ID- 1 AS StoreID,
     STK_Name AS StoreName,
-    a.Trans_No,
+   '"' +a.Trans_No,
     CONVERT ( datetime, LEFT ( EfTran_Date, 12 ), 101 ) AS DATE,
     datepart( hh, CONVERT ( TIME, EfTran_Date, 108 ) ) AS HOUR,
     datepart( WW, EfTran_Date ) AS Week,
