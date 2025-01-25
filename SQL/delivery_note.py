@@ -3,9 +3,20 @@ import asyncio
 import os
 import pandas as pd
 from datetime import datetime
+import numpy as np
 
 # Bearer Token
 BEARER_TOKEN = "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijg4NkE3REIwQjU1OThEMTNEMEY2MzE0RjUzQjI3RDlEIiwidHlwIjoiYXQrand0In0.eyJuYmYiOjE3Mzc3ODUyMDQsImV4cCI6MTczNzg3MTYwNCwiaXNzIjoiaHR0cHM6Ly9mZHMtYXV0aC5yb3gudm4iLCJhdWQiOlsiUG9ydGFsIiwiRklMRSIsIklOVEciLCJJTlYiLCJNQUlMIiwiTURNIiwiTk9USSIsIlBPTSIsIlJQVCJdLCJjbGllbnRfaWQiOiJGRFNfV0VCIiwic3ViIjoiZDBlMTczNTAtNDE5MC00MjcxLTg3OGEtM2I4Y2VkYWMyOGQ1IiwiYXV0aF90aW1lIjoxNzM3Nzg1MjA0LCJpZHAiOiJsb2NhbCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2dpdmVubmFtZSI6IsOBSSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3N1cm5hbWUiOiJQSOG6oE0gxJDhu6hDIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiRjAwMDA0NDIiLCJnaXZlbl9uYW1lIjoiw4FJIiwiZmFtaWx5X25hbWUiOiJQSOG6oE0gxJDhu6hDIiwicm9sZSI6WyJhZG1pbiIsIklUIl0sInBob25lX251bWJlciI6IjEyMzQ1Njc4OTAiLCJwaG9uZV9udW1iZXJfdmVyaWZpZWQiOiJGYWxzZSIsImVtYWlsIjoiYWkucGRAZmFtaW1hLnZuIiwiZW1haWxfdmVyaWZpZWQiOiJGYWxzZSIsIm5hbWUiOiJGMDAwMDQ0MiIsInNpZCI6IkU2MDVCQTJFRDcwODM4RjcwMThFQ0Y5RkNFOEZGMTYwIiwiaWF0IjoxNzM3Nzg1MjA0LCJzY29wZSI6WyJvcGVuaWQiLCJQb3J0YWwiLCJGSUxFIiwiSU5URyIsIklOViIsIk1BSUwiLCJNRE0iLCJOT1RJIiwiUE9NIiwiUlBUIl0sImFtciI6WyJwd2QiXX0.gO6-qCcNmt0Ubxdm41e6XYaE9O94Ki9wZ5Lm5sJKNUzbXiy5-kZCchcoSpKrVrCygX56YGBb0h-k8pHSWeb9XNpXfdL-uqstPfO_twye9Wmiudwhh0T3XfifKJ9DMNdWyHpnxAsxgCUmrH5bmoe6LJ2rHb36sZz6oq6dx-K3JQBbhSWAVUGwnDzSKILCoZ3a8Yj6Io8HmsHbYmgFFpyaShT8hAgIh0nQWRYrMafW9VQjZfflYkfoYIz2dCrJQ67ov6c9fkVTwe-VrdcLrZkD1-I9OaPsb8TywiFJI0u2cF0ncCX1Iioc3ybOKQbzKoUpjCL2nP490yQXBIrEA6F7_Q"
+ISSUES_DATE_TIME = "2025-01-06T13:09:42.000Z" 
+# Đệ quy chuyển đổi numpy.int64 hoặc numpy.float64 trong danh sách object
+def convert_numpy_to_python(obj):
+    if isinstance(obj, list):
+        return [convert_numpy_to_python(item) for item in obj]
+    elif isinstance(obj, dict):
+        return {key: convert_numpy_to_python(value) for key, value in obj.items()}
+    elif isinstance(obj, (pd.Int64Dtype, np.int64, np.float64)):
+        return int(obj) if isinstance(obj, (np.int64, pd.Int64Dtype)) else float(obj)
+    return obj
 
 # Chuyển đổi dữ liệu từ API sang dữ liệu GoodsIssueDetail
 def convert_data_good_issue_detail(api_data, quantity):
@@ -48,13 +59,12 @@ def convert_issue_detail_mappings(good_issue_detail, api_data, total_quantity):
     has_association = api_data.get("parentProduct") is not None
 
     # Lấy detailRefQty từ productAssociationItems
-    detail_ref_qty = api_data.get("productAssociationItems", [])
 
     # Chuyển đổi dữ liệu cuối cùng
     final_data = {
         "beginningInventory": api_data.get("beginningInventory"),
         "createDateTime": current_datetime,
-        "detailRefQty": detail_ref_qty,  # Mảng rỗng
+        "detailRefQty": "[]",  # Mảng rỗng
         "goodsIssueDetails": [good_issue_detail],  # Kết quả từ hàm convert_data_good_issue_detail
         "hasAssociation": has_association,
         "inventoryCostPrice": api_data.get("inventoryCostPrice"),
@@ -114,36 +124,41 @@ async def fetch_inventory_transfer(session, store_code, item_code):
             print(await response.text())
             return None
 async def post_goods_issue(session, store_code, result_goods_issue_detail, result_goods_issue_detail_mappings):
-    # Body của API POST
     body = {
         "description": f"Goods issue for store {store_code}",
         "goodsIssueDetailMappings": result_goods_issue_detail_mappings,
         "goodsIssueDetails": result_goods_issue_detail,
-        "issuesDateTime": "2025-01-05T13:09:42.000Z",
-        "refCode": "null",
-        "refId": "",
-        "storeCode": store_code,  # Đảm bảo store_code là chuỗi
+        "issuesDateTime": ISSUES_DATE_TIME,
+        "refCode": None,
+        "refId": None,
+        "storeCode": store_code,
         "storeName": "",
         "type": "GOODS_ISSUE_TYPE.OTHER"
     }
 
-    # URL của API
     post_url = "https://fds-portal.rox.vn/inv/api/app/goods-issue/add"
-    
-    try:
-        # Gửi yêu cầu POST
-        async with session.post(post_url, json=body) as response:
-            if response.status == 200:
-                print(f"API POST thành công cho cửa hàng {store_code}.")
-                return await response.json()  # Trả về kết quả từ API nếu thành công
-            else:
-                print(f"Lỗi khi gọi API POST cho cửa hàng {store_code}, Status={response.status}")
-                print(await response.text())
-                return None
-    except Exception as e:
-        print(f"Lỗi ngoại lệ khi gọi API POST: {e}")
-        return None
 
+    try:
+        # Send POST request
+        async with session.post(post_url, json=convert_numpy_to_python(body)) as response:
+            # Check if the response is successful
+            if response.status == 200:
+                print(f"API POST succeeded for storeCode={store_code}")
+                return await response.json()
+            else:
+                # Handle errors when the response status is not 200
+                error_message = await response.text()
+                print(f"Error during API POST. Status={response.status}. Response: {error_message}")
+                return None
+    except aiohttp.ClientConnectionError as e:
+        print(f"Connection error during API POST for storeCode={store_code}: {e}")
+        return None
+    except aiohttp.ClientResponseError as e:
+        print(f"Response error from server during API POST for storeCode={store_code}: {e}")
+        return None
+    except Exception as e:
+        print(f"Unexpected error during API POST for storeCode={store_code}: {e}")
+        return None
 
 async def main():
     folder_path = r"D:\xuathang"  # Thư mục chứa file Excel
@@ -155,59 +170,44 @@ async def main():
     
     print(f"Đọc dữ liệu từ file: {file_path}")
     data = read_excel_data(file_path)
-    print(f"Dữ liệu đã đọc:\n{data}")
 
     async with aiohttp.ClientSession(headers={"Authorization": BEARER_TOKEN}) as session:
         # Lấy danh sách mã cửa hàng
         store_codes = data['CH'].unique()
-        print(f"Danh sách mã cửa hàng: {store_codes}")
-
-        # Vòng lặp qua từng cửa hàng
+        
         for store_code in store_codes:
-            # Đảm bảo store_code là chuỗi
-            store_code = str(store_code).zfill(5)
-            
             # Lọc danh sách sản phẩm thuộc cửa hàng
             items = data[data['CH'] == store_code]
             result_goods_issue_detail = []
-            result_goods_issue_detail_mappings = []
-            print(f"Đang xử lý cửa hàng {store_code}...")
+            result_goods_issue_detail_mappings=[]
+            store_code = str(store_code).zfill(5)
 
+            # Tính tổng số lượng từ cột `qty` trong file Excel
             for _, row in items.iterrows():
-                print("heello")
-                try:
-                    item_code = str(row['item'])
-                    quantity = int(row['qty'])  # Đảm bảo số lượng là số nguyên
-                except Exception as e:
-                    print(f"Lỗi khi xử lý dòng: {row}\n{e}")
-                    continue
-
+                item_code = row['item']
+                quantity = row['qty']  # Lấy số lượng từ file Excel cho từng sản phẩm
                 print(f"Gọi API cho CH={store_code}, Mã sản phẩm={item_code}")
                 api_data = await fetch_inventory_transfer(session, store_code, item_code)
-
+                
                 if api_data:
                     # Chuyển đổi dữ liệu và thêm vào danh sách kết quả
                     good_issue_detail = convert_data_good_issue_detail(api_data, quantity)
                     good_issue_detail_mappings = convert_issue_detail_mappings(good_issue_detail, api_data, quantity)
+
                     result_goods_issue_detail.append(good_issue_detail)
                     result_goods_issue_detail_mappings.append(good_issue_detail_mappings)
-                    print(f"Dữ liệu đã chuyển đổi: {good_issue_detail}")
-                else:
-                    print(f"Dữ liệu API trả về rỗng cho sản phẩm {item_code} của cửa hàng {store_code}.")
 
-            # Sau khi xử lý xong tất cả sản phẩm trong cửa hàng, gọi API POST
-            # if result_goods_issue_detail and result_goods_issue_detail_mappings:
-            #     print(f"Đang gửi dữ liệu POST cho cửa hàng {store_code}...")
-            #     post_response = await post_goods_issue(
-            #         session=session,
-            #         store_code=store_code,
-            #         result_goods_issue_detail=result_goods_issue_detail,
-            #         result_goods_issue_detail_mappings=result_goods_issue_detail_mappings
-            #     )
-            #     if post_response:
-            #         print(f"Phản hồi từ API POST cho cửa hàng {store_code}: {post_response}")
-            #     else:
-            #         print(f"API POST thất bại cho cửa hàng {store_code}.")
+                    print(f"Dữ liệu đã chuyển đổi: {result_goods_issue_detail_mappings}")
+            post_response = await post_goods_issue(
+            session=session,
+            store_code=store_code,
+            result_goods_issue_detail=result_goods_issue_detail,
+            result_goods_issue_detail_mappings=result_goods_issue_detail_mappings
+            )
+            if post_response:
+                print(f"Phản hồi từ API POST cho cửa hàng {store_code}: {post_response}")
+            else:
+                print(f"API POST thất bại cho cửa hàng {store_code}.")
 
 # Thực thi chương trình
 asyncio.run(main())
