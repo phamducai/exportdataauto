@@ -50,7 +50,7 @@ SELECT
   to_char(rpm.HASEI_TIME, 'MM') AS "Tháng giao dịch", 
   to_char(rpm.HASEI_TIME, 'DD') AS "Ngày giao dịch", 
   to_char(rpm.HASEI_TIME, 'HH24:MI:SS') AS "Thời gian giao dịch", 
-  to_char(rpm.CONO) || to_char(rpm.HASEI_TIME, 'HH24:MI:SS') AS "BILL_NO", 
+  to_char(rpm.CONO) || to_char(rpm.HASEI_TIME, 'HH24:MI:SS') AS BILL_NO, 
   rpm.C_TANPIN AS "Items Code", 
   rpm.C_TANPIN AS "Items ID", 
   rpm.C_CLASS AS "Categories ID", 
@@ -83,7 +83,7 @@ WHERE
 print("Bắt đầu đọc dữ liệu từ Oracle...")
 df_data = pd.read_sql(query, engine)
 print("Đọc dữ liệu thành công từ Oracle")
-
+df_data.rename(columns={'bill_no': 'BILL_NO'}, inplace=True)
 # Định dạng tên file
 excel_filename = f'iPoint_Data_{start_date_str}_to_{end_date_str}.xlsx'
 

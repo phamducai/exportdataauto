@@ -28,7 +28,7 @@ async def fetch_inventory_transfer(session, store_code):
         "filterText": "",
         "fromDate": FROM_DATE,
         "isExportStore": False,
-        "maxResultCount": 50,
+        "maxResultCount": 200,
         "skipCount": 0,
         "sorting": "CreationTime desc",
         "statusCode": "INVENTORY_TRANSFER_STATUS.GOODS_ISSUED",
