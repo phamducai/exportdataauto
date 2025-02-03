@@ -3,7 +3,9 @@ import asyncio
 
 # Bearer Token
 BEARER_TOKEN = "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijg4NkE3REIwQjU1OThEMTNEMEY2MzE0RjUzQjI3RDlEIiwidHlwIjoiYXQrand0In0.eyJuYmYiOjE3MzcwODM1NzcsImV4cCI6MTczNzE2OTk3NywiaXNzIjoiaHR0cHM6Ly9mZHMtYXV0aC5yb3gudm4iLCJhdWQiOlsiUG9ydGFsIiwiRklMRSIsIklOVEciLCJJTlYiLCJNQUlMIiwiTURNIiwiTk9USSIsIlBPTSIsIlJQVCJdLCJjbGllbnRfaWQiOiJGRFNfV0VCIiwic3ViIjoiZDBlMTczNTAtNDE5MC00MjcxLTg3OGEtM2I4Y2VkYWMyOGQ1IiwiYXV0aF90aW1lIjoxNzM3MDgzNTc3LCJpZHAiOiJsb2NhbCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2dpdmVubmFtZSI6IsOBSSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3N1cm5hbWUiOiJQSOG6oE0gxJDhu6hDIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiRjAwMDA0NDIiLCJnaXZlbl9uYW1lIjoiw4FJIiwiZmFtaWx5X25hbWUiOiJQSOG6oE0gxJDhu6hDIiwicm9sZSI6WyJhZG1pbiIsIklUIl0sInBob25lX251bWJlciI6IjEyMzQ1Njc4OTAiLCJwaG9uZV9udW1iZXJfdmVyaWZpZWQiOiJGYWxzZSIsImVtYWlsIjoiYWkucGRAZmFtaW1hLnZuIiwiZW1haWxfdmVyaWZpZWQiOiJGYWxzZSIsIm5hbWUiOiJGMDAwMDQ0MiIsInNpZCI6IjU3MzkyMTBBRTAxMEQzMDQxNzlENTc4MEQxRkIxQzI1IiwiaWF0IjoxNzM3MDgzNTc3LCJzY29wZSI6WyJvcGVuaWQiLCJQb3J0YWwiLCJGSUxFIiwiSU5URyIsIklOViIsIk1BSUwiLCJNRE0iLCJOT1RJIiwiUE9NIiwiUlBUIl0sImFtciI6WyJwd2QiXX0.mmyE66dbSYcmxJ-KAKluYl87g0pWOeTaaQKRRrFLGxreHrJ0YsJNyce7H9-rYsSo4j9B9vt-onO3GGjZ0dyg-wZWR3AFNkOpNDwxO9NNUUxM5K5h8B12ExTSo3IGGp0z2-UjQKaRVsG1SCgQU9zd7I21D4CTrV0noQX675EDdZRTbFbhYn0lsEJvzKpTyFm8qLFBWegTFT8hL1u2LYczJq7l_ZmUBayZNKxpRi0dyf5BvwmHyzb1Z2JbiOeXchnwhWCMbq4_HBQFrRF2f4iz_GqYBLypyMtaAHz1gBVJCI6UhwPxfbSLG0H31lPnzfPOqFEQpaSal0URjIdYb_n6_Q"
-
+# Global date variables
+FROM_DATE = "2025-01-01T00:00:00.000Z"
+TO_DATE = "2025-01-31T23:59:59.999Z"
 # Fetch store codes
 async def fetch_store_codes(session):
     url = "https://fds-portal.rox.vn/mdm/api/app/store?skipCount=0&maxResultCount=200"
@@ -24,14 +26,14 @@ async def fetch_inventory_transfer(session, store_code):
     url = "https://fds-portal.rox.vn/inv/api/app/inventory-transfer/get-list"
     payload = {
         "filterText": "",
-        "fromDate": "2025-01-01T00:00:00.000Z",
+        "fromDate": FROM_DATE,
         "isExportStore": False,
         "maxResultCount": 50,
         "skipCount": 0,
         "sorting": "CreationTime desc",
         "statusCode": "INVENTORY_TRANSFER_STATUS.GOODS_ISSUED",
         "storeCode": [store_code],
-        "toDate": "2025-01-31T23:59:59.999Z",
+        "toDate": TO_DATE,
         "type": ""
     }
 
