@@ -22,7 +22,8 @@ engine = create_engine(connection_string, echo=True)
 print("Kết nối thành công đến MySQL")
 
 # Tính toán ngày mồng 1 của tháng trước và ngày mồng 2 của tháng này
-today = datetime.now() - relativedelta(months=1)
+
+today = datetime.now() - relativedelta(months=0)
 
 # Ngày mùng 1 của tháng hiện tại
 first_day_of_current_month = today.replace(day=1)
