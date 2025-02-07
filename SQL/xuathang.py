@@ -17,7 +17,7 @@ async def fetch_inventory_transfer(session):
         "filterText": "",
         "fromDate": "2025-01-01T00:00:00.000Z",
         "isExportStore": True,
-        "maxResultCount": 3,
+        "maxResultCount": 300,
         "skipCount": 0,
         "sorting": "CreationTime desc",
         "statusCode": "INVENTORY_TRANSFER_STATUS.APPROVED",
