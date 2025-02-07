@@ -9,7 +9,7 @@ FROM_DATE = "2024-12-01T00:00:00.000Z"
 TO_DATE = "2024-12-31T23:59:59.999Z"
 
 # Lấy danh sách cửa hàng
-async def fetch_store_codes(session):
+async def fetch_store_list(session):
     url = "https://fds-portal.rox.vn/mdm/api/app/store?skipCount=0&maxResultCount=200"
 
     async with session.get(url) as response:
@@ -17,9 +17,9 @@ async def fetch_store_codes(session):
             result = await response.json()
             data = result.get("data", {})
             items = data.get("items", [])
-            return [item.get("code") for item in items if item.get("code")]
+            return [{"store_code": item.get("code"), "store_name": item.get("name")} for item in items if item.get("code")]
         else:
-            print(f"Failed to fetch store codes. Status code: {response.status}")
+            print(f"Failed to fetch store list. Status code: {response.status}")
             print(await response.text())
             return []
 
@@ -36,7 +36,7 @@ async def fetch_inventory_transfer(session, store_code):
         "statusCode": "INVENTORY_TRANSFER_STATUS.APPROVED",
         "storeCode": [store_code],
         "toDate": TO_DATE,
-        "type": ""
+        "type": "INVENTORY_TRANSFER_TYPE.FROM_STORE_TO_STORE"
     }
 
     async with session.post(url, json=payload) as response:
@@ -108,44 +108,40 @@ async def fetch_specific_inventory_transfer(session, specific_id):
 # Hàm chính để xử lý tất cả cửa hàng
 async def main():
     async with aiohttp.ClientSession(headers={"Authorization": BEARER_TOKEN}) as session:
-        # Lấy danh sách cửa hàng
-        store_codes = await fetch_store_codes(session)
-        if not store_codes:
-            print("No store codes found. Exiting...")
+        store_list = await fetch_store_list(session)
+        if not store_list:
+            print("No store found. Exiting...")
             return
 
-        print(f"Processing {len(store_codes)} stores...")
+        print(f"Processing {len(store_list)} stores...")
 
-        # Lặp qua từng cửa hàng để xử lý phiếu xuất hàng
-        for store_code in store_codes:
-            print(f"Processing store code: {store_code}")
-
-            # Lấy danh sách phiếu xuất hàng của cửa hàng
+        for store in store_list:
+            store_code = store["store_code"]
+            store_name = store["store_name"]
+            print(f"Processing store: {store_name} (Code: {store_code})")
             codes_and_ids = await fetch_inventory_transfer(session, store_code)
 
             for item in codes_and_ids:
                 inventory_transfer_id = item["id"]
                 ref_code = item["code"]
-
-                # Lấy chi tiết phiếu xuất hàng
                 goods_issue_details = await call_create_goods_issue(session, inventory_transfer_id)
 
-                if goods_issue_details:  # Nếu có dữ liệu, tiếp tục tạo phiếu xuất
+                if goods_issue_details:  
                     payload = {
                         "issuesDateTime": None,
                         "refCode": ref_code,
                         "refId": inventory_transfer_id,
-                        "storeName": "DUMMY TRANSFER",
+                        "storeName": store_name, 
                         "storeCode": store_code,
                         "type": "GOODS_ISSUE_TYPE.INVENTORY_TRANSFER",
                         "description": "",
                         "goodsIssueDetails": goods_issue_details
                     }
-                    print(f"Adding goodsIssueDetails for inventoryTransferId={ref_code}")
-                    await call_add_goods_issue(session, payload)
-                    print(f"Successfully added goodsIssueDetails for inventoryTransferId={ref_code}")
+                    print(f"Adding goodsIssueDetails for inventoryTransferId={ref_code} at store {store_name}")
+                    await call_add_goods_issue(session, payload)  # Uncomment nếu muốn thực hiện gọi API
+                    print(f"Successfully added goodsIssueDetails for inventoryTransferId={ref_code} at store {store_name}")
                 else:
-                    print(f"No goodsIssueDetails for inventoryTransferId={inventory_transfer_id}")
+                    print(f"No goodsIssueDetails for inventoryTransferId={inventory_transfer_id} at store {store_name}")
 
 # Thực thi
 asyncio.run(main())
