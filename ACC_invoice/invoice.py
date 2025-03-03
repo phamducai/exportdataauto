@@ -236,12 +236,12 @@ async def main():
         processor = DataProcessor(CreateFilesStrategy())
     elif issue_type == 'differences' and len(differences) > 0:
         # Differences found, send an email about discrepancies
-        email_recipients = ['ai.pd@famima.vn', 'an.np@famima.vn','hau.pm@famima.vn']
+        email_recipients = ['duong.pdh@famima.vn', 'an.np@famima.vn','hau.pm@famima.vn']
         processor = DataProcessor(SendEmailStrategy(emails=email_recipients))
     else:  # Case 2: arr1 != arr2 != arr3
         # Missing IDs found, send an email about missing data
         print(len(arr1) ,len(arr2) , len(arr3))
-        email_recipients = ['an.np@famima.vn', 'ai.pd@famima.vn','hau.pm@famima.vn']
+        email_recipients = ['an.np@famima.vn', 'duong.pdh@famima.vn','hau.pm@famima.vn']
         processor = DataProcessor(SendEmailStrategy(emails=email_recipients))
 
     # Process data based on the selected strategy
