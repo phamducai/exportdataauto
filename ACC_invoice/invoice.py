@@ -8,6 +8,9 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta
 
+# tempt file compared
+# if check folder Z:\4.IT\1. DATA\ACC\Phuong missing file, change date, run mysqlFinal and run this script
+
 # MySQL connection details
 mysql_user = 'AIIT'
 mysql_password = 'Simple123'
@@ -40,7 +43,7 @@ params = urllib.parse.quote_plus(
 )
 sqlserver_connection_string = f"mssql+pyodbc:///?odbc_connect={params}"
 sqlserver_engine = create_engine(sqlserver_connection_string, echo=True)
-days_to_subtract = 1
+days_to_subtract = 1 # subtract days from current date
 current_date =(datetime.now() - timedelta(days=days_to_subtract)).strftime("%Y-%m-%d") # Format: YYYY-MM-DD for SQL queries
 current_date_formatted = (datetime.now() - timedelta(days=days_to_subtract)).strftime("%Y/%m/%d")  # Format: YYYY/MM/DD for the stored procedure
 current_invoice_date = (datetime.now() - timedelta(days=days_to_subtract)).strftime("%Y%m%d")  # Format: YYYYMMDD for the stored procedure
@@ -236,12 +239,12 @@ async def main():
         processor = DataProcessor(CreateFilesStrategy())
     elif issue_type == 'differences' and len(differences) > 0:
         # Differences found, send an email about discrepancies
-        email_recipients = ['ai.pd@famima.vn', 'an.np@famima.vn','hau.pm@famima.vn']
+        email_recipients = ['duong.pdh@famima.vn', 'an.np@famima.vn','hau.pm@famima.vn']
         processor = DataProcessor(SendEmailStrategy(emails=email_recipients))
     else:  # Case 2: arr1 != arr2 != arr3
         # Missing IDs found, send an email about missing data
         print(len(arr1) ,len(arr2) , len(arr3))
-        email_recipients = ['an.np@famima.vn', 'ai.pd@famima.vn','hau.pm@famima.vn']
+        email_recipients = ['an.np@famima.vn', 'duong.pdh@famima.vn','hau.pm@famima.vn']
         processor = DataProcessor(SendEmailStrategy(emails=email_recipients))
 
     # Process data based on the selected strategy
