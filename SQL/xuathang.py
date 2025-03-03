@@ -23,7 +23,7 @@ async def fetch_inventory_transfer(session):
         "statusCode": "INVENTORY_TRANSFER_STATUS.APPROVED",
         "storeCode": [STORE_CODE],
         "toDate": "2025-01-30T23:59:59.999Z",
-        "type": ""
+        "type": "INVENTORY_TRANSFER_TYPE.FROM_STORE_TO_STORE"
     }
 
     async with session.post(url, json=payload) as response:
